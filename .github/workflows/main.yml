@@ -24,6 +24,7 @@ jobs:
           chmod +x repo
           ./repo init -u https://github.com/CyanogenMod/android.git -b cm-12.1
           cd /home/runner/work/device_lenovo_TB3_710F/device_lenovo_TB3_710F
+          find .
           curl https://raw.githubusercontent.com/szazs89/device_lenovo_TB3_710F/master/roomservice.xml > .repo/local_manifests/roomservice.xml
           ./repo sync
           USE_CCACHE=1 ./prebuilts/misc/linux-x86/ccache/ccache -M 50G
