@@ -1,0 +1,31 @@
+name: ROM
+on:
+  workflow_dispatch:
+
+jobs:
+  sleepybuild:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Creating Env!
+      uses: actions/checkout@v2
+
+    - name: Setting up Env!
+      run: |
+          sudo -E apt-get -qq update
+          sudo -E apt-get -qq install git make bc bison \
+          openssl curl zip kmod cpio flex libelf-dev \
+          libssl-dev libtfm-dev wget device-tree-compiler \
+          ca-certificates python3 python2 binutils \
+          binutils-aarch64-linux-gnu binutils-arm-linux-gnueabi
+    - name: Building Kernel..
+      run: |
+          curl https://storage.googleapis.com/git-repo-downloads/repo > repo    
+          chmod +x repo
+          ./repo init -u https://github.com/CyanogenMod/android.git -b cm-12.1
+          curl https://raw.githubusercontent.com/szazs89/device_lenovo_TB3_710F/master/roomservice.xml > .repo/local_manifests/roomservice.xml
+          ./repo sync
+          USE_CCACHE=1 ./prebuilts/misc/linux-x86/ccache/ccache -M 50G
+          USE_CCACHE=1 script $(mktemp /tmp/brunch-XXX.out)
+          . build/envsetup.sh && brunch TB3_710F
+      shell: bash
